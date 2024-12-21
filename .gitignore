@@ -1,0 +1,23 @@
+# Node.js dependencies
+node_modules/
+
+# Build and output directories
+.next/
+out/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# OS-specific
+.DS_Store
+
+# Database files
+*.sqlite
+*.sqlite3
