@@ -16,7 +16,7 @@ app.use('/api/profiles', profileRoutes);
 
 (async () => {
     try {
-        await sequelize.sync();
+        await sequelize.sync({ force: true });
         console.log('Connected to the database.');
 
         app.listen(process.env.PORT, () => {
