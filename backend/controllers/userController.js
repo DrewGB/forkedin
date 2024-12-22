@@ -30,9 +30,12 @@ exports.createUser = async (req, res) => {
     }
 }
 
-exports.updateUser = async (req, res) => {
+exports.updateUser = async (req, res, next) => {
     const { email, password } = req.body;
     const id = req.params.id;
+
+    if(parseInt(id) !== req.user?.userId) return res.status(403).json(
+        { error: 'You are not authorized to update this user.' })
 
     if (!email || !password) {
         return res.status(400).json({ error: 'Email and password are required.' });
@@ -60,8 +63,11 @@ exports.updateUser = async (req, res) => {
     }
 }
 
-exports.deleteUser = async (req, res) => {
+exports.deleteUser = async (req, res, next) => {
     const { id } = req.params;
+
+    if(parseInt(id) !== req.user?.userId) return res.status(403).json(
+        { error: 'You are not authorized to delete this user.' })
 
     try {
         const user = await User.findByPk(id);
