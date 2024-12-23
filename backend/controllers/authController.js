@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');  // Adjust to your actual user model location
 
 exports.login = async (req, res) => {
+    console.log("Login reached")
     const { email, password } = req.body;
 
     if (!email || !password) {
@@ -13,7 +14,8 @@ exports.login = async (req, res) => {
     if (!user) {
         return res.status(404).json({ error: 'Invalid credentials' });
     }
-
+    console.log(user)
+    console.log(await user.validatePassword(password));
     const isPasswordValid = await user.validatePassword(password);
     if (!isPasswordValid) {
         return res.status(400).json({ error: 'Invalid credentials' });
@@ -25,12 +27,7 @@ exports.login = async (req, res) => {
         { expiresIn: '1h' }
     );
 
-    res.cookie('token', token, {
-        httpOnly: true,    // Makes the cookie inaccessible via JavaScript
-        secure: process.env.NODE_ENV === 'production',  // Only sends cookie over HTTPS in production
-        sameSite: 'Strict',  // Helps prevent CSRF attacks
-        maxAge: 3600000,    // 1 hour expiration
-    });
+    console.log(token)
 
-    res.json({ message: 'User logged in successfully' });
+    res.status(200).json({ message: 'User logged in successfully', token });
 };

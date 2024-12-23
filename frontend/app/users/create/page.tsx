@@ -1,5 +1,6 @@
-'use client'
+"use client"; // Always use 'use client' at the top of client components
 import React, { useState } from "react";
+import { useRouter } from "next/navigation"; // Import from 'next/navigation'
 
 const Create = () => {
     const [formData, setFormData] = useState({
@@ -15,6 +16,8 @@ const Create = () => {
             [e.target.name]: e.target.value,
         });
     };
+
+    const router = useRouter(); // Works with 'next/navigation'
 
     // Handle form submission
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -43,7 +46,7 @@ const Create = () => {
 
             // Handle response
             if (res.ok) {
-                console.log("Successfully created user");
+                router.push("/"); // Correct way to programmatically navigate
             } else {
                 console.log("Error creating user.");
             }

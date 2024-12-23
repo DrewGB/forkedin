@@ -10,19 +10,24 @@ exports.getAllProfiles = async (req, res) => {
 }
 
 exports.getMyProfile = async (req, res) => {
+    console.log('Getting my profile');
     try {
-        const userId = parseInt( req.user.userId ); // Assuming the user ID is available in the `req.user` object
-        const profile = await Profile.findOne({where: {userId}});
+        const userId = parseInt(req.user.userId); // Assuming req.user exists and contains userId
+        console.log('User ID: ' + userId);
+
+        const profile = await Profile.findOne({ where: { UserId: userId } });
 
         if (!profile) {
-            return res.status(404).json({message: "Profile not found"});
+            // Profile doesn't exist
+            return res.status(404).json({ message: 'Profile not found' });
         }
 
         res.status(200).json(profile);
     } catch (err) {
-        res.status(500).json({message: "Failed to fetch the profile"});
+        console.error('Problem fetching the profile', err);
+        res.status(500).json({ message: 'Failed to fetch the profile' });
     }
-}
+};
 
 exports.getOneProfile = async (req, res) => {
     const profileId = req.params.id
@@ -41,24 +46,22 @@ exports.createProfile = async (req, res) => {
 
     try {
 
-        const existingProfile = await Profile.findOne({ where: { userId } });
+        const existingProfile = await Profile.findOne({ where: { UserId: userId } });
         if (existingProfile) {
             return res.status(400).json({ error: "User already has a profile" });
         }
-
         if (!firstName || !lastName) {
             return res.status(400).json({ error: "First and last name are required" });
         }
 
         const profile = await Profile.create({
-            userId,
+            UserId: userId,
             firstName,
             lastName,
             bio,
             age,
             avatarUrl: avatarUrl || null
         });
-
         res.status(201).json(profile);
     } catch (err) {
         console.error('Error creating profile:', err); // Log errors
@@ -70,7 +73,7 @@ exports.updateProfile = async (req, res) => {
     const userId = req.user.userId;
 
     try {
-        const profile = await Profile.findOne({ where: { userId } });
+        const profile = await Profile.findOne({ where: { UserId: userId } });
         if (!profile) {
             return res.status(404).json({ message: "Profile not found" });
         }

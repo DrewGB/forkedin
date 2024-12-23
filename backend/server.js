@@ -1,18 +1,29 @@
 const express = require('express');
-const cors = require('cors');
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 require('dotenv').config();
 
 const userRoutes = require('./routes/userRoutes');
 const profileRoutes = require('./routes/profileRoutes');
+const authRoutes = require('./routes/authRoutes');
 const sequelize = require('./config/database');
 
 const app = express();
-app.use(cors());
+
+const cors = require('cors');
+
+app.use(
+    cors({
+        origin: 'http://localhost:3000', // Frontend origin
+    })
+);
+app.use(cookieParser());
+
 app.use(bodyParser.json());
 
 app.use('/api/users', userRoutes);
 app.use('/api/profiles', profileRoutes);
+app.use('/api/auth', authRoutes);
 
 (async () => {
     try {
